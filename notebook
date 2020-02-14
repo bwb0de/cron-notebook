@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+
+Gera declarações padronizadas a partir do cruzamento de modelos com as informações dos estudantes.
+
+Usage:
+    notebook add 
+    notebook view [ -d ] [ <tag>... ]
+    notebook remove <time_tag>
+    notebook edit <time_tag>
+    notebook edit-pending
+
+Options:
+    -v, --version           
+    -d, --detalhada
+
+"""
+
+import os
+
+from docopt import docopt
+from subprocess import getoutput
+from cli_notebook import *
+from py_pickle_handlers import read_pickle
+
+notebook_file = './notebook.ntb'
+ntb = read_pickle(notebook_file)
+
+args = docopt(__doc__)
+
+def main():
+    if args['add']:
+        ntb.add()
+
+    elif args['remove']:
+        ntb.remove_event(args['<time_tag>'])
+    
+    elif args['view']:
+        if args['<tag>'] != []:
+            filters = args['<tag>']
+        else:
+            filters = False 
+        
+        if args['--detalhada']:
+            ntb.show_events(filters=filters, show_assunto=True, show_detalhes=True)
+        else:
+            ntb.show_events(filters=filters)
+
+if __name__ == '__main__':
+    output = main()
+        
